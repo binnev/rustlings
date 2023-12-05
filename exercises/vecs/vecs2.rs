@@ -7,13 +7,12 @@
 //
 // Execute `rustlings hint vecs2` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 fn vec_loop(mut v: Vec<i32>) -> Vec<i32> {
     for element in v.iter_mut() {
-        // TODO: Fill this up so that each element in the Vec `v` is
-        // multiplied by 2.
-        ???
+        // here we dereference the pointer to the integer (I guess Rust would
+        // call this a borrowed integer); reaching into the vector to update the
+        // value
+        *element = *element * 2
     }
 
     // At this point, `v` should be equal to [4, 8, 12, 16, 20].
@@ -21,11 +20,15 @@ fn vec_loop(mut v: Vec<i32>) -> Vec<i32> {
 }
 
 fn vec_map(v: &Vec<i32>) -> Vec<i32> {
-    v.iter().map(|element| {
-        // TODO: Do the same thing as above - but instead of mutating the
-        // Vec, you can just return the new number!
-        ???
-    }).collect()
+    v.iter()
+        .map(|element| {
+            // here the .map method returns a whole new vector, so we can just
+            // return the desired new value without any dereferencing
+            element * 2
+        })
+        .collect() // I guess map is lazy like in python, and here we explicitly
+                   // cash it in. Kind of like how you need to do
+                   // `list(map(f, arr))` in python
 }
 
 #[cfg(test)]
