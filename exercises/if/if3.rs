@@ -2,17 +2,20 @@
 //
 // Execute `rustlings hint if3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 pub fn animal_habitat(animal: &str) -> &'static str {
+    // looks like we're doing a sort of multi-level variable assignment here. I
+    // wonder if it's a specific construct, or if the whole "if" block can be
+    // evaluated to a value in other contexts, too.
+    // It's a bit like python's `foo = 1 if ... else 2` but more readable,
+    // because the order isn't reversed
     let identifier = if animal == "crab" {
         1
     } else if animal == "gopher" {
-        2.0
+        2
     } else if animal == "snake" {
         3
     } else {
-        "Unknown"
+        420
     };
 
     // DO NOT CHANGE THIS STATEMENT BELOW
