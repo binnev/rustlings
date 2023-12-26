@@ -8,12 +8,13 @@
 // Execute `rustlings hint traits3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 pub trait Licensed {
-    fn licensing_info(&self) -> String;
+    // This is really weird. I assumed the whole point would be to grab the
+    // version_number...
+    fn licensing_info(&self) -> String {
+        return "Some information".to_string();
+    }
 }
-
 struct SomeSoftware {
     version_number: i32,
 }

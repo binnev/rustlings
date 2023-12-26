@@ -7,14 +7,25 @@
 // Execute `rustlings hint traits1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
+// So this is just the _description_ of the desired interface. The blueprint,
+// without a concrete implementation.
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
+// Here we
+// 1) provide the concrete implementation of AppendBar and
+// 2) attach it to String.
+//
+// And, I guess, mark `String` as having implemented AppendBar
+//
+// Let's just pause for a second. We _attached new functionality to a std
+// library object!_ That's awesome.
 impl AppendBar for String {
-    // TODO: Implement `AppendBar` for type `String`.
+    fn append_bar(self) -> Self {
+        // We return a new copy (?)
+        self.to_owned() + "Bar"
+    }
 }
 
 fn main() {
