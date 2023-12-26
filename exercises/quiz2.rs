@@ -20,8 +20,6 @@
 //
 // No hints this time!
 
-// I AM NOT DONE
-
 pub enum Command {
     Uppercase,
     Trim,
@@ -31,12 +29,24 @@ pub enum Command {
 mod my_module {
     use super::Command;
 
-    // TODO: Complete the function signature!
-    pub fn transformer(input: ???) -> ??? {
-        // TODO: Complete the output declaration!
-        let mut output: ??? = vec![];
+    // I want the mutable string type, because
+    pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
+        let mut output: Vec<String> = vec![];
+        // This is cool; I can use `match` in the middle of a function call
         for (string, command) in input.iter() {
-            // TODO: Complete the function body. You can do it!
+            output.push(match command {
+                Command::Uppercase => string.to_uppercase(),
+                Command::Trim => string.trim().to_string(),
+                // Another alternative:
+                // Command::Append(n) => string.to_owned() + &"bar".repeat(*n)
+                // `string` is type &String, so I need to convert it to owned so I can modify it.
+                // Then I immediately need to borrow my repeated string literal for some reason.
+                // This approach looks confusing so I went for `format` instead
+                Command::Append(n) => {
+                    let bars = "bar".repeat(*n); // this is type &str I think
+                    format!("{string}{bars}") // format creates a new string, leaving both inputs untouched.
+                }
+            })
         }
         output
     }
@@ -44,13 +54,14 @@ mod my_module {
 
 #[cfg(test)]
 mod tests {
-    // TODO: What do we need to import to have `transformer` in scope?
-    use ???;
+    use super::my_module::transformer;
     use super::Command;
 
     #[test]
     fn it_works() {
         let output = transformer(vec![
+            // I think the `.into()` here just converts this string literal
+            // into whatever string type I specified in my function signature.
             ("hello".into(), Command::Uppercase),
             (" all roads lead to rome! ".into(), Command::Trim),
             ("foo".into(), Command::Append(1)),
