@@ -6,15 +6,23 @@
 // Execute `rustlings hint generics2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
-struct Wrapper {
-    value: u32,
+struct Wrapper<T> {
+    value: T,
 }
 
-impl Wrapper {
-    pub fn new(value: u32) -> Self {
+// This implementation will work for Wrappers of any type V.
+// We would usually use the same generic type name as above (T), but we don't have to
+impl<V> Wrapper<V> {
+    // Whoa, a Self type
+    pub fn new(value: V) -> Self {
         Wrapper { value }
+    }
+}
+
+// _this_ will only be implemented for wrappers of Strings!
+impl Wrapper<String> {
+    pub fn print(&self) {
+        println!("{}", self.value)
     }
 }
 
