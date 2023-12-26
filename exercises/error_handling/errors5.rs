@@ -22,14 +22,17 @@
 // Execute `rustlings hint errors5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::error;
 use std::fmt;
 use std::num::ParseIntError;
 
-// TODO: update the return type of `main()` to make this compile.
-fn main() -> Result<(), Box<dyn ???>> {
+// So here I'm saying, I will return nothing (the unit tuple) or an error (a
+// type that implements the error::Error trait). A trait is like an interface in
+// Go parlance. Apparently we need to use the dyn keyword for this.
+//
+// The reason we do this is because we unpack several potential errors using the
+// `?` operator. We need to specify our return type to capture this.
+fn main() -> Result<(), Box<dyn error::Error>> {
     let pretend_user_input = "42";
     let x: i64 = pretend_user_input.parse()?;
     println!("output={:?}", PositiveNonzeroInteger::new(x)?);
@@ -50,6 +53,7 @@ enum CreationError {
 impl PositiveNonzeroInteger {
     fn new(value: i64) -> Result<PositiveNonzeroInteger, CreationError> {
         match value {
+            // wow this is neat <3
             x if x < 0 => Err(CreationError::Negative),
             x if x == 0 => Err(CreationError::Zero),
             x => Ok(PositiveNonzeroInteger(x as u64)),
