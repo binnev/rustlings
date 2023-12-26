@@ -11,19 +11,29 @@
 // Execute `rustlings hint hashmaps1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 fn fruit_basket() -> HashMap<String, u32> {
-    let mut basket = // TODO: declare your hash map here.
+    // Ways to instantiate a hashmap
+    // empty
+    let mut basket: HashMap<String, u32> = HashMap::new();
+    // This is the closest you can get to a "hashmap literal"
+    let mut basket: HashMap<String, u32> = HashMap::from([
+        (String::from("mango"), 69),
+        (String::from("papaya"), 420),
+        (String::from("apple"), 666),
+        (String::from("tangerine"), 9000),
+    ]);
 
     // Two bananas are already given for you :)
     basket.insert(String::from("banana"), 2);
 
-    // TODO: Put more fruits in your basket here.
+    basket.insert(String::from("mango"), 69);
+    basket.insert(String::from("papaya"), 420);
+    basket.insert(String::from("apple"), 666);
+    basket.insert(String::from("tangerine"), 9000);
 
-    basket
+    basket // these return values still look weird to me...
 }
 
 #[cfg(test)]
