@@ -8,9 +8,11 @@
 // Execute `rustlings hint lifetimes1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
-fn longest(x: &str, y: &str) -> &str {
+// Because the return value of this function could be either of the inputs, they
+// all share one sort of "lifetime space". In reality, the compiler chooses 'a
+// based on the shortest lifetime of the inputs. The name 'a is arbitrary. It's
+// like generic type names (short), but lowercase.
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() {
         x
     } else {
