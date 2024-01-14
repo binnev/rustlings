@@ -11,8 +11,6 @@
 // Execute `rustlings hint iterators5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -35,7 +33,13 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    // Python:
+    // sum(1 for val in map.values() if val==value)
+
+    // I still don't understand where these double borrows come from... Ah it's
+    // because the signature of my closure needs to specify that it's borrowing
+    // the value, not taking ownership.
+    map.iter().filter(|(_, &val)| val == value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -54,7 +58,13 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    collection
+        .iter()
+        .map(|hashmap| count_iterator(hashmap, value))
+        .reduce(|a, b| a + b)
+        // not sure why we need to unwrap here; count_iterator returns a bare
+        // usize, not an option. Maybe it's a reduce thing? Can reduce fail?
+        .unwrap()
 }
 
 #[cfg(test)]

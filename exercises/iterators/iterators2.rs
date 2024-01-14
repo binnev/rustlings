@@ -6,16 +6,18 @@
 // Execute `rustlings hint iterators2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 // Step 1.
 // Complete the `capitalize_first` function.
 // "hello" -> "Hello"
 pub fn capitalize_first(input: &str) -> String {
     let mut c = input.chars();
+
+    // .next() CONSUMES the first char, so now the chars iterator only contains
+    // the remaining chars. This is why we can concatenate c.as_str() and the
+    // first character is not duplicated.
     match c.next() {
         None => String::new(),
-        Some(first) => ???,
+        Some(first) => first.to_uppercase().to_string() + c.as_str(),
     }
 }
 
@@ -24,7 +26,7 @@ pub fn capitalize_first(input: &str) -> String {
 // Return a vector of strings.
 // ["hello", "world"] -> ["Hello", "World"]
 pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
-    vec![]
+    words.iter().map(|word| capitalize_first(word)).collect()
 }
 
 // Step 3.
@@ -32,7 +34,15 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
 // Return a single string.
 // ["hello", " ", "world"] -> "Hello World"
 pub fn capitalize_words_string(words: &[&str]) -> String {
-    String::new()
+    words
+        .iter()
+        .map(|word| capitalize_first(word))
+        // I don't understand why we need to tell .collect() what type to expect
+        // here. `words` is an array of &str. We feed it to a function that
+        // takes a &str and spits out a String. So of course we end up with a
+        // Vector of Strings!
+        .collect::<Vec<String>>()
+        .join("")
 }
 
 #[cfg(test)]
