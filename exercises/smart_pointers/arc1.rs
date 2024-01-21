@@ -21,19 +21,28 @@
 //
 // Execute `rustlings hint arc1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+// a thread appears to be similar to an asyncio.Task -- it runs in the
+// background, and if the main process finishes, it just kills all threads
+// whether they're finished or not. So the solution is also similar to asyncio
+// -- keep a handle to the task/thread, and explicitly wait for it to complete.
+// In Rust this is the `.join()` method.
 
 #![forbid(unused_imports)] // Do not change this, (or the next) line.
+                           // Arc stands for Atomic Reference Counted. It's like a Rc smart pointer that's
+                           // safe to share between threads.
 use std::sync::Arc;
 use std::thread;
 
 fn main() {
+    // Hmm so you can tell `.collect()` that you expect a Vec type but you don't
+    // have to tell it the contained type?
     let numbers: Vec<_> = (0..100u32).collect();
-    let shared_numbers = // TODO
+    let shared_numbers = Arc::new(numbers);
     let mut joinhandles = Vec::new();
 
     for offset in 0..8 {
-        let child_numbers = // TODO
+        // I need to borrow here because I can't move the original Arc 8 times.
+        let child_numbers = Arc::clone(&shared_numbers);
         joinhandles.push(thread::spawn(move || {
             let sum: u32 = child_numbers.iter().filter(|&&n| n % 8 == offset).sum();
             println!("Sum of offset {} is {}", offset, sum);
