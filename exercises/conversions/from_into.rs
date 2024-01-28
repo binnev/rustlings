@@ -40,12 +40,9 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 // Here we are defining how we can convert &str into a Person. It must not fail.
 impl From<&str> for Person {
-    fn from(s: &str) -> Person {
-        // There must be a better (flatter) way of chaining these if-let
+    fn from(s: &str) -> Person {// There must be a better (flatter) way of chaining these if-let
         // statements. I'm thinking something similar to the `?` operator for
         // Result<Ok, Err> return values. But that doesn't seem to be possible.
         //
