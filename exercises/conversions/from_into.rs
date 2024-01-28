@@ -51,29 +51,18 @@ impl From<&str> for Person {
         }
         let mut components = s.split(","); // 2.
 
-        match components.next() {
-            Some(name) => {
-                if name.len() == 0 {
-                    return Person::default();
-                }
-                match components.next() {
-                    Some(age_str) => match age_str.parse::<usize>() {
-                        Ok(age) => {
-                            return Person {
-                                name: name.to_string(),
-                                age: age,
-                            }
-                        }
-                        Err(_) => {
-                            println!("Couldn't parse age: {}", age_str);
-                            Person::default()
-                        }
-                    },
-                    None => Person::default(),
+        if let Some(name) = components.next() {
+            if name.len() > 0 {
+                if let Some(age_str) = components.next() {
+                    if let Ok(age) = age_str.parse::<usize>() {
+                        return Person {
+                            name: name.to_string(),
+                            age: age,
+                        };
+                    }
                 }
             }
-            None => Person::default(),
-        };
+        }
 
         Person::default()
     }
