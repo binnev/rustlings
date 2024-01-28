@@ -45,25 +45,43 @@ impl Default for Person {
 // Here we are defining how we can convert &str into a Person. It must not fail.
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
-        // 1.
-        if s.len() == 0 {
-            return Person::default();
-        }
-        let mut components = s.split(","); // 2.
+        // There must be a better (flatter) way of chaining these if-let
+        // statements. I'm thinking something similar to the `?` operator for
+        // Result<Ok, Err> return values. But that doesn't seem to be possible.
+        //
+        // In python, I'd do:
+        // def _from(s: str) -> Person:
+        //     if (
+        //         (components := s.split(","))
+        //         and len(components) >= 2
+        //         and (name := components[0])
+        //         and (age_str := components[1])
+        //         and age_str.isnumeric()
+        //         and (age := int(age_str))
+        //     ):
+        //         return Person(name, age)
+        //     return Person("John", 30)
+        //
+        // and this works because I can declare new variables inline with the
+        // walrus operator
 
-        if let Some(name) = components.next() {
-            if name.len() > 0 {
-                if let Some(age_str) = components.next() {
-                    if let Ok(age) = age_str.parse::<usize>() {
-                        return Person {
-                            name: name.to_string(),
-                            age: age,
-                        };
+        if s.len() > 0 {
+            let mut components = s.split(",");
+            if let Some(name) = components.next() {
+                if name.len() > 0 {
+                    if let Some(age_str) = components.next() {
+                        if let Ok(age) = age_str.parse::<usize>() {
+                            return Person {
+                                name: name.to_string(),
+                                age: age,
+                            };
+                        }
                     }
                 }
             }
         }
 
+        // at least we only need to specify this sad flow return value once.
         Person::default()
     }
 }
@@ -157,5 +175,12 @@ mod tests {
         let p: Person = Person::from("Mike,32,man");
         assert_eq!(p.name, "Mike");
         assert_eq!(p.age, 32);
+    }
+
+    #[test]
+    fn test_nasty_input() {
+        let p: Person = Person::from(",36");
+        assert_eq!(p.name, "John");
+        assert_eq!(p.age, 30);
     }
 }
