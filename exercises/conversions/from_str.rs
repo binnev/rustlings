@@ -64,15 +64,30 @@ impl FromStr for Person {
         let mut components = s.split(",");
 
         // 4
-        let name = components.next().unwrap();
-        if name.len() == 0 {
-            return Err(ParsePersonError::NoName);
-        }
+
+        // Here I can safely call unwrap() because I checked the length of the
+        // iterator above. I use the match statement to return a Result<Ok,
+        // Err>, so that I can immediately invoke the `?` operator afterwards.
+        // If the match statement returns an Ok value, it is unpacked and stored
+        // in `name`. If it returns an Err value, it is returned from the
+        // `from_str` func
+        let name = match components.next().unwrap() {
+            x if x.len() > 0 => Ok(x),
+            x => Err(ParsePersonError::NoName),
+        }?;
+
         // 5
-        let age_str = components.next().unwrap();
-        let age = age_str
+
+        // Same here; it is safe to call .unwrap() because I've checked the
+        // length. I use `map_err` to convert a raw ParseIntError into a
+        // ParsePersonError::ParseInt. Then I immediately use the `?` operator
+        // to either continue with the Ok value or return the Err from the
+        // `from_str` function.
+        let age = components
+            .next()
+            .unwrap()
             .parse::<usize>()
-            .map_err(|err| return ParsePersonError::ParseInt(err))?;
+            .map_err(|err| ParsePersonError::ParseInt(err))?;
 
         return Result::Ok(Person {
             name: name.to_string(),
