@@ -5,8 +5,9 @@
 // Execute `rustlings hint macros3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
+// OK so this attribute makes the macros not go out of scope when the end of
+// their module is reached... I think.
+#[macro_use]
 mod macros {
     macro_rules! my_macro {
         () => {
