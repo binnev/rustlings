@@ -7,25 +7,40 @@
 // Execute `rustlings hint as_ref_mut` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 // Obtain the number of bytes (not characters) in the given argument.
-// TODO: Add the AsRef trait appropriately as a trait bound.
-fn byte_counter<T>(arg: T) -> usize {
+fn byte_counter<T>(arg: T) -> usize
+where
+    T: AsRef<str>,
+{
+    // `as_ref()` auto-dereferences
     arg.as_ref().as_bytes().len()
 }
 
 // Obtain the number of characters (not bytes) in the given argument.
-// TODO: Add the AsRef trait appropriately as a trait bound.
-fn char_counter<T>(arg: T) -> usize {
+fn char_counter<T>(arg: T) -> usize
+where
+    T: AsRef<str>,
+{
     arg.as_ref().chars().count()
 }
 
-// Squares a number using as_mut().
-// TODO: Add the appropriate trait bound.
-fn num_sq<T>(arg: &mut T) {
-    // TODO: Implement the function body.
-    ???
+// Squares a number using as_mut(). NOTE: we want to square the value IN-PLACE.
+// We receive a mutable borrow of type T. We need to update the contained value
+// without taking __ownership__ of the value.
+fn num_sq<T>(arg: &mut T)
+where
+    T: AsMut<u32>,
+{
+    // I'm really struggling to figure out what is going on here. I need to
+    // deref the left hand side, but I also need to do .as_mut() on it...
+    //
+    // `as_mut()` returns a `&mut T`, so then I need to deref to get at the `T`
+    // value itself, I guess?
+    //
+    // So I guess `Box` implements `AsMut` and `Box.as_mut()` basically means
+    // "hey Box, give me a mutable borrow of your contained value". Then we
+    // deref that to modify the value, not the pointer.
+    *arg.as_mut() *= *arg.as_mut();
 }
 
 #[cfg(test)]

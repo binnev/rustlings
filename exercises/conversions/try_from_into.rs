@@ -10,6 +10,7 @@
 // a hint.
 
 use std::convert::{TryFrom, TryInto};
+use std::num::TryFromIntError;
 
 #[derive(Debug, PartialEq)]
 struct Color {
@@ -21,13 +22,17 @@ struct Color {
 // We will use this error type for these `TryFrom` conversions.
 #[derive(Debug, PartialEq)]
 enum IntoColorError {
-    // Incorrect length of slice
-    BadLen,
-    // Integer conversion error
-    IntConversion,
+    BadLen,        // Incorrect length of slice
+    IntConversion, // Integer conversion error
 }
 
-// I AM NOT DONE
+/// This allows us to use the `?` operator to easily coerce a TryFromIntError
+/// into a IntoColorError, which simplifies the syntax below considerably.
+impl From<TryFromIntError> for IntoColorError {
+    fn from(err: TryFromIntError) -> IntoColorError {
+        return IntoColorError::IntConversion;
+    }
+}
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -40,7 +45,18 @@ enum IntoColorError {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
+    // Note that the expected type is i16, which will not always fit into a u8.
+    // That's why we use `u8::try_from`, which gives us a
+    // `Result<Ok,TryFromIntError>`. Because we've implemented the
+    // `From<TryFromIntError` on our custom error enum above, we can use the `?`
+    // operator here to quickly return the correct error if the conversion
+    // fails. Nice!
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        return Ok(Color {
+            red: u8::try_from(tuple.0)?,
+            green: u8::try_from(tuple.1)?,
+            blue: u8::try_from(tuple.2)?,
+        });
     }
 }
 
@@ -48,6 +64,11 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        return Ok(Color {
+            red: u8::try_from(arr[0])?,
+            green: u8::try_from(arr[1])?,
+            blue: u8::try_from(arr[2])?,
+        });
     }
 }
 
@@ -55,6 +76,14 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return Err(Self::Error::BadLen);
+        }
+        return Ok(Color {
+            red: u8::try_from(slice[0])?,
+            green: u8::try_from(slice[1])?,
+            blue: u8::try_from(slice[2])?,
+        });
     }
 }
 
