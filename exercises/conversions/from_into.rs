@@ -42,8 +42,40 @@ impl Default for Person {
 
 // I AM NOT DONE
 
+// Here we are defining how we can convert &str into a Person. It must not fail.
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        // 1.
+        if s.len() == 0 {
+            return Person::default();
+        }
+        let mut components = s.split(","); // 2.
+
+        match components.next() {
+            Some(name) => {
+                if name.len() == 0 {
+                    return Person::default();
+                }
+                match components.next() {
+                    Some(age_str) => match age_str.parse::<usize>() {
+                        Ok(age) => {
+                            return Person {
+                                name: name.to_string(),
+                                age: age,
+                            }
+                        }
+                        Err(_) => {
+                            println!("Couldn't parse age: {}", age_str);
+                            Person::default()
+                        }
+                    },
+                    None => Person::default(),
+                }
+            }
+            None => Person::default(),
+        };
+
+        Person::default()
     }
 }
 
